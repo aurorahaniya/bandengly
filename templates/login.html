@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Bandengly</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #ade8f4, #caf0f8);
+      font-family: 'Poppins', sans-serif;
+      color: #023047;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-card {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 15px;
+      padding: 40px 50px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      color: #03045e;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .form-control {
+      border-radius: 8px;
+      border: 1px solid #90e0ef;
+    }
+    .btn-login {
+      background-color: #0077b6;
+      color: white;
+      border-radius: 8px;
+      padding: 10px;
+      font-weight: 500;
+      width: 100%;
+      transition: 0.3s;
+    }
+    .btn-login:hover {
+      background-color: #005f86;
+      transform: scale(1.02);
+    }
+    .link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #03045e;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2>Masuk dengan Email</h2>
+    <form method="POST" action="/login">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" name="email" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required>
+      </div>
+      <button type="submit" class="btn-login">Masuk</button>
+    </form>
+    <a href="/register" class="link">Belum punya akun? Daftar</a>
+  </div>
+</body>
+</html>
+
