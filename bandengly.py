@@ -1889,15 +1889,15 @@ def buku_besar_page():
     for p in penyesuaian:
         nama_asli = get_nama(p)
         nama_key = fix(nama_asli)
-        kode = p["ref"]
+        kode = p["kode_akun"]
 
         if nama_key not in buku_besar:
-            buku_besar[nama_key] = {"nama": nama_asli, "kode": kode, "rows": []}
+            buku_besar[nama_key] = {"nama": nama_asli, "kode_akun": kode, "rows": []}
 
         buku_besar[nama_key]["rows"].append({
             "tanggal": p["tanggal"],
             "keterangan": "Penyesuaian",
-            "ref": kode,
+            "kode_akun": kode,
             "debit": float(p["debit"] or 0),
             "kredit": float(p["kredit"] or 0)
         })
@@ -1918,23 +1918,18 @@ def buku_besar_page():
             "kredit": float(jp["kredit"] or 0)
         })
 
-    # ===============================
-    # HITUNG SALDO BERJALAN
-    # ===============================
+    
     for key, akun in buku_besar.items():
         saldo = 0
         for row in akun["rows"]:
             saldo += row["debit"] - row["kredit"]
             row["saldo"] = saldo
 
-    # ===============================
-    # URUTKAN BERDASARKAN KODE AKUN
-    # ===============================
+   
     buku_besar_sorted = dict(
         sorted(buku_besar.items(), key=lambda x: x[1]["kode"])
     )
 
-    # kirim ke template, tapi key = nama akun asli
     final_data = {
         akun_data["nama"]: {
             "kode": akun_data["kode"],
@@ -2667,7 +2662,7 @@ def neraca_saldo_setelah_penyesuaian():
     # PENYESUAIAN
     for p in penyesuaian:
         add(
-            p["ref"],
+            p["kode_akun"],
             get_nama(p),
             float(p.get("debit") or 0),
             float(p.get("kredit") or 0)
