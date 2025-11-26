@@ -2079,18 +2079,16 @@ NS_SBLM_PENYESUAIAN_WEB= """
 @app.route("/neraca-saldo-sebelum-penyesuaian", methods=["GET", "POST"])
 def neraca_saldo_sebelum_penyesuaian():
 
-    # ===========================
-    #  POST → SIMPAN KE SUPABASE
-    # ===========================
+    
     if request.method == "POST":
 
-        # --- HITUNG SALDO ---
+        
         saldo_awal = supabase.table("neraca_saldo_awal").select("*").execute().data
         transaksi = supabase.table("input_transaksi").select("*").execute().data
 
         saldo = {}
 
-        # saldo awal
+        
         for r in saldo_awal:
             kode = r["Kode_Akun"]
             nama = r["Nama_Akun"]
@@ -2102,7 +2100,7 @@ def neraca_saldo_sebelum_penyesuaian():
                 "saldo": debit - kredit
             }
 
-        # transaksi
+    
         for t in transaksi:
             kode = t["ref"]
             debit = float(t["debit"] or 0)
@@ -2115,7 +2113,7 @@ def neraca_saldo_sebelum_penyesuaian():
 
             saldo[kode]["saldo"] += debit - kredit
 
-        # final list
+        
         final_list = [{
             "kode_akun": k,
             "nama_akun": v["nama"],
@@ -2123,25 +2121,22 @@ def neraca_saldo_sebelum_penyesuaian():
             "kredit": abs(v["saldo"]) if v["saldo"] < 0 else 0
         } for k, v in saldo.items()]
 
-        # bersihkan data lama
+        
         supabase.table("neraca_saldo_sebelum_penyesuaian").delete().neq("kode_akun", "").execute()
-
-        # simpan data baru
         supabase.table("neraca_saldo_sebelum_penyesuaian").insert(final_list).execute()
 
         return redirect("/neraca-saldo-sebelum-penyesuaian")
 
 
 
-    # ===========================
-    #  GET → TAMPILKAN HALAMAN
-    # ===========================
+   
+    #  TAMPILKAN HALAMAN
     saldo_awal = supabase.table("neraca_saldo_awal").select("*").execute().data
     transaksi = supabase.table("input_transaksi").select("*").execute().data
 
     saldo = {}
 
-    # saldo awal
+   
     for r in saldo_awal:
         kode = r["Kode_Akun"]
         nama = r["Nama_Akun"]
@@ -2153,7 +2148,7 @@ def neraca_saldo_sebelum_penyesuaian():
             "saldo": debit - kredit
         }
 
-    # transaksi
+    
     for t in transaksi:
         kode = t["ref"]
         debit = float(t["debit"] or 0)
@@ -2166,7 +2161,7 @@ def neraca_saldo_sebelum_penyesuaian():
 
         saldo[kode]["saldo"] += debit - kredit
 
-    # final list
+    
     final_list = [{
         "kode_akun": k,
         "nama_akun": v["nama"],
@@ -2174,10 +2169,10 @@ def neraca_saldo_sebelum_penyesuaian():
         "kredit": abs(v["saldo"]) if v["saldo"] < 0 else 0
     } for k, v in saldo.items()]
 
-    # sorting
+    
     final_list = sorted(final_list, key=lambda x: x["kode_akun"])
 
-    # total
+    
     total_debit = sum(i["debit"] for i in final_list)
     total_kredit = sum(i["kredit"] for i in final_list)
 
@@ -2273,14 +2268,14 @@ PENYESUAIAN_WEB = """
             width: 110px;
         }
 
-        /* Debit akun = rata kiri */
+        
         .akun-debit {
             padding-left: 35px !important;
             text-align: left;
             font-weight: 600;
         }
 
-        /* Kredit akun = rata kanan */
+        
         .akun-kredit {
             text-align: center;
             font-weight: 600;
@@ -2296,8 +2291,6 @@ PENYESUAIAN_WEB = """
 <body>
 
 <h1>📘 Jurnal Penyesuaian</h1>
-
-<!-- ================= FORM INPUT ================= -->
 <div class="card">
     <h2 style="color:#DAA520;">Tambah Jurnal Penyesuaian</h2>
 
@@ -2321,8 +2314,6 @@ PENYESUAIAN_WEB = """
     </form>
 </div>
 
-
-<!-- ================= DAFTAR PENYESUAIAN ================= -->
 <div class="card">
     <h2 style="color:#DAA520;">Daftar Jurnal Penyesuaian</h2>
 
@@ -2609,10 +2600,6 @@ NERACA_SESUDAH_PENYESUAIAN_WEB = """
         <button type="submit" class="btn-simpan">Simpan Neraca Setelah Penyesuaian</button>
     </form>
 </div>
-
-
-
-
 </body>
 </html>
 """
@@ -2641,7 +2628,6 @@ def neraca_saldo_setelah_penyesuaian():
         akun_dict[kode]["debit"] += d
         akun_dict[kode]["kredit"] += k
 
-    # SALDO AWAL
     for s in saldo_awal:
         add(
             s.get("ref") or s.get("Kode_Akun"),
@@ -2650,7 +2636,7 @@ def neraca_saldo_setelah_penyesuaian():
             float(s.get("kredit") or s.get("Kredit") or 0)
         )
 
-    # TRANSAKSI
+  
     for t in transaksi:
         add(
             t["ref"],
@@ -2659,7 +2645,7 @@ def neraca_saldo_setelah_penyesuaian():
             float(t.get("kredit") or 0)
         )
 
-    # PENYESUAIAN
+   
     for p in penyesuaian:
         add(
             p["kode_akun"],
@@ -2668,7 +2654,7 @@ def neraca_saldo_setelah_penyesuaian():
             float(p.get("kredit") or 0)
         )
 
-    # 🔥 FIX PENTING — HITUNG SALDO AKHIR PER AKUN
+
     akun_final = {}
 
     for kode, val in akun_dict.items():
@@ -2694,10 +2680,8 @@ def neraca_saldo_setelah_penyesuaian():
             "kredit": k
         }
 
-    # SORTED
     akun_sorted = dict(sorted(akun_final.items(), key=lambda x: x[0]))
 
-    # TOTAL
     total_debit = sum(v["debit"] for v in akun_sorted.values())
     total_kredit = sum(v["kredit"] for v in akun_sorted.values())
     if request.method == "POST":
@@ -2711,10 +2695,9 @@ def neraca_saldo_setelah_penyesuaian():
                 "kredit": a["kredit"],
             })
 
-        # Hapus data lama
         supabase.table("neraca_setelah_penyesuaian").delete().neq("kode_akun", "").execute()
 
-        # Insert baru
+       
         supabase.table("neraca_setelah_penyesuaian").insert(rows).execute()
 
         return redirect("/neraca-saldo-setelah-penyesuaian")
@@ -2739,7 +2722,6 @@ app.jinja_env.filters["rupiah"] = format_rupiah
 @app.route("/neraca-lajur", methods=["GET", "POST"])
 def neraca_lajur():
     if request.method == "POST":
-        # Ambil data
         sebelum = supabase.table("neraca_saldo_sebelum_penyesuaian").select("*").execute().data
         penyesuaian = supabase.table("jurnal_penyesuaian").select("*").execute().data
         setelah = supabase.table("neraca_setelah_penyesuaian").select("*").execute().data
@@ -2787,14 +2769,11 @@ def neraca_lajur():
             aft_k = aft.get("kredit", 0)
 
             kode_akun = str(kode)
-
-            # ===== Hitung Laba Rugi =====
             if kode_akun.startswith("4"):
                 lr_k = aft_k - aft_d
             elif kode_akun.startswith(("5", "6")):
                 lr_d = aft_d - aft_k
 
-            # ===== Hitung Neraca =====
             if kode_akun.startswith("1"):   # Aset (normal debit)
                 selisih = aft_d - aft_k
                 if selisih >= 0:
@@ -2822,11 +2801,10 @@ def neraca_lajur():
                 "nr_k": nr_k
             })
 
-        # Hapus & insert baru
-        # HAPUS SEMUA DATA
+        
         supabase.table("neraca_lajur").delete().neq("id", 0).execute()
 
-        # INSERT DATA BARU
+      
         supabase.table("neraca_lajur").insert(rows_to_save).execute()
 
 
@@ -2894,13 +2872,11 @@ def neraca_lajur():
 
         kode_akun = str(kode)
 
-        # Laba rugi
         if kode_akun.startswith("4"):
             lr_k = aft_k - aft_d
         elif kode_akun.startswith(("5", "6")):
             lr_d = aft_d - aft_k
 
-        # Neraca
         if kode_akun.startswith("1"):   # Aset (normal debit)
             selisih = aft_d - aft_k
             if selisih >= 0:
@@ -2913,7 +2889,7 @@ def neraca_lajur():
                 nr_k = selisih
             else:
                 nr_d = abs(selisih) 
-        # AKUMULASI
+       
         tot_awal_d += awal_d
         tot_awal_k += awal_k
         tot_adj_d += adj_d
@@ -2940,7 +2916,7 @@ def neraca_lajur():
             "nr_k": nr_k,
         })
 
-    # Hitung laba rugi bersih
+  
     laba_rugi = tot_lr_k - tot_lr_d
     red_lr_d = tot_lr_d
     red_lr_k = tot_lr_k
@@ -2955,9 +2931,6 @@ def neraca_lajur():
         red_nr_d += abs(laba_rugi)
 
 
-
-
-    # HTML langsung inline
     html = """
     <html>
     <head>
@@ -3065,18 +3038,16 @@ def neraca_lajur():
             <td colspan="2" style="text-align:center;">Laba (Rugi) Bersih</td>
             <td colspan="6"></td>
 
-            <!-- Kolom Laba Rugi -->
+            
             {% if laba_rugi_bersih >= 0 %}
                 <!-- LABA → LR DEBIT -->
                 <td>{{ laba_rugi_bersih|rupiah }}</td> 
                 <td></td>
             {% else %}
-                <!-- RUGI → LR KREDIT -->
                 <td></td>
                 <td>{{ (laba_rugi_bersih|abs)|rupiah }}</td> 
             {% endif %}
 
-            <!-- Kolom Neraca -->
             {% if laba_rugi_bersih >= 0 %}
                 <!-- LABA → NERACA KREDIT -->
                 <td></td>
@@ -3092,7 +3063,7 @@ def neraca_lajur():
             <td colspan="2"style="text-align:center;">Jumlah</td>
             <td colspan="6"></td>
 
-            <!-- Kolom Laba Rugi (Debit, Kredit) -->
+           
             <td>{{ red_lr_d and red_lr_d|rupiah or "" }}</td>
             <td>{{ red_lr_k and red_lr_k|rupiah or "" }}</td>
 
@@ -3173,7 +3144,7 @@ LAPORAN_WEB =  """
         }
 
         .box {
-            margin: 30px auto;       /* biar ke tengah */
+            margin: 30px auto;       
             border: 2px solid #D8B66A;
             padding: 18px;
             background: #FFF7DA;
@@ -3265,8 +3236,8 @@ LAPORAN_WEB =  """
     {% for r in rows if r.kode_akun.startswith ('5') %}
     <tr>
         <td>{{ r.nama_akun }}</td>
-        <td class="right">{{ r.lr_d | rupiah }}</td>   <!-- KOLOM TENGAH -->
-        <td></td>                                      <!-- KOLOM KANAN KOSONG -->
+        <td class="right">{{ r.lr_d | rupiah }}</td>   
+        <td></td>                                      
     </tr>
     {% endfor %}
     <tr>
@@ -3276,7 +3247,6 @@ LAPORAN_WEB =  """
     </tr>
 
 
-    <!-- LABA KOTOR -->
     <tr>
         <td class="bold mt20">Laba Kotor</td>
         <td></td>
@@ -3728,8 +3698,6 @@ def hitung_laporan_arus_kas():
     }
 
 
-
-
 @app.route("/laporan-keuangan")
 def laporan_keuangan():
     rows = get_neraca_lajur_data()
@@ -3808,9 +3776,7 @@ def laporan_keuangan():
         kas_awal = kas_awal_data[0]["Debit"] - kas_awal_data[0]["Kredit"]
 
 
-    # =========================
-    #      RETURN TEMPLATE
-    # =========================
+   
     return render_template_string(
         LAPORAN_WEB,
         rows=rows,
@@ -3949,7 +3915,7 @@ JURNAL_PENUTUP_WEB = """
         }
 
         .akun-kredit {
-            justify-content: left; /* posisi cell di tengah kolom */
+            justify-content: left; 
             text-align: left;
             font-weight: 600;
             padding-left: 10%
@@ -4357,9 +4323,7 @@ def neraca_saldo_setelah_penutupan():
             "kredit": k
         }
 
-    # -------------------------
-    # urutkan berdasarkan kode
-    # -------------------------
+    
     neraca_sorted = dict(sorted(neraca.items(), key=lambda x: x[0]))
 
     total_debit = sum(v["debit"] for v in neraca_sorted.values())
