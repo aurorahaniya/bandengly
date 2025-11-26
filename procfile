@@ -1,1 +1,1 @@
-web: gunicorn bandengly:app
+web: gunicorn bandengly:app --bind 0.0.0.0:$PORT
