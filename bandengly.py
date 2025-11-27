@@ -173,7 +173,7 @@ LOGIN_WEB = """
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    {box-sizing: border-box;}
+    *{box-sizing: border-box;}
 
     body {
       margin: 0;
@@ -3272,7 +3272,7 @@ LAPORAN_WEB =  """
     <tr>
         <td class="bold mt20">Total Beban Operasional</td>
         <td></td>
-        <td class="right bold">({{ beban_operasional | rupiah }}</td>
+        <td class="right bold">({{ beban_operasional | rupiah }})</td>
     </tr>
 
     <!-- LABA BERSIH -->
