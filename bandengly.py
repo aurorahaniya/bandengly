@@ -2421,6 +2421,22 @@ function addRow() {
 
 @app.route("/penyesuaian", methods=["GET", "POST"])
 def jurnal_penyesuaian():
+
+    def safe_float(val):
+        if val is None:
+            return 0
+        if isinstance(val, (int, float)):
+            return float(val)
+        if isinstance(val, str):
+            val = val.strip()
+            if val == "":
+                return 0
+            try:
+                return float(val)
+            except:
+                return 0
+        return 0
+
     if request.method == "POST":
         tanggal = request.form.get("tanggal")
         nama_akun = request.form.getlist("nama_akun[]")
@@ -2432,8 +2448,8 @@ def jurnal_penyesuaian():
             if not nama_akun[i].strip():
                 continue
 
-            d = float(debit[i]) if debit[i] else 0
-            k = float(kredit[i]) if kredit[i] else 0
+            d = safe_float(debit[i])
+            k = safe_float(kredit[i])
 
             supabase.table("jurnal_penyesuaian").insert({
                 "tanggal": tanggal,
@@ -2443,7 +2459,6 @@ def jurnal_penyesuaian():
                 "kredit": k,
             }).execute()
 
-    # hanya load data, tidak ada insert apapun disini
     data = (
         supabase.table("jurnal_penyesuaian")
         .select("*")
@@ -2452,8 +2467,8 @@ def jurnal_penyesuaian():
         .data
     )
 
-    total_debit = sum(x["debit"] for x in data)
-    total_kredit = sum(x["kredit"] for x in data)
+    total_debit = sum(safe_float(x.get("debit")) for x in data)
+    total_kredit = sum(safe_float(x.get("kredit")) for x in data)
 
     return render_template_string(
         PENYESUAIAN_WEB,
@@ -2461,6 +2476,8 @@ def jurnal_penyesuaian():
         total_debit=total_debit,
         total_kredit=total_kredit,
     )
+
+
 NERACA_SESUDAH_PENYESUAIAN_WEB = """
 <!DOCTYPE html>
 <html lang="id">
