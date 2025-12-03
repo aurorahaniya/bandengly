@@ -505,116 +505,119 @@ DASHBOARD_WEB = """
 
 <style>
   :root {
-    --bg1: #fff7df;
-    --bg2: #ffefc2;
-    --bg3: #ffe59b;
+    /* SUNFLOWER COLORS */
+    --sun1: #FFF9E8;   /* light sunflower cream */
+    --sun2: #FFE9A8;   /* soft yellow */
+    --sun3: #FFD45A;   /* sunflower highlight */
+    --sun4: #FFC300;   /* core sunflower */
 
-    --card-bg: rgba(255, 253, 247, 0.92);
-    --border: rgba(255, 214, 90, 0.55);
-    --text: #6a4d2f;
+    --card: rgba(255, 251, 238, 0.7);
+    --border: rgba(255, 195, 0, 0.45);
+    --text: #5A3E2B;   /* sunflower seed brown */
 
-    --green: #7bb547;
-    --green-hover: #6aa13b;
-    --gold: #d09b3d;
+    --accent: #8BBE4D;  /* leaf green */
+    --accent-hover: #7CAF42;
   }
 
   body {
     margin: 0;
     font-family: "Poppins", sans-serif;
-    background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
-    height: 100vh;
-    overflow: hidden;
+    background: linear-gradient(125deg, var(--sun1), var(--sun2), var(--sun3));
+    min-height: 100vh;
+
     display: flex;
     justify-content: center;
-    align-items: center;
+    padding: 30px;
   }
 
   .wrapper {
-    width: 95%;
-    max-width: 1200px;
-    height: 90vh;
-    background: var(--card-bg);
-    border-radius: 30px;
-    padding: 40px;
+    width: 100%;
+    max-width: 1250px;
+    background: var(--card);
+    backdrop-filter: blur(15px);
+    border-radius: 35px;
+    padding: 45px 50px;
     border: 2px solid var(--border);
-    box-shadow: 0 18px 45px rgba(0,0,0,0.12);
-    backdrop-filter: blur(10px);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+    animation: fade 0.45s ease-out;
+  }
 
-    display: flex;
-    flex-direction: column;
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .header-area {
+    text-align: center;
+    margin-bottom: 35px;
   }
 
   h2 {
-    text-align: center;
+    font-size: 30px;
     font-weight: 700;
     color: var(--text);
-    font-size: 28px;
-    margin-bottom: 4px;
-    letter-spacing: 0.3px;
+    margin: 0;
   }
 
   .subtitle {
-    text-align: center;
-    color: #8a7a63;
-    margin-bottom: 30px;
+    color: #7b6b53;
     font-size: 14px;
+    margin-top: 6px;
   }
 
   .grid-menu {
-    flex: 1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 22px;
   }
 
   .menu-item {
-    background: #ffffff;
+    background: #fffdf6;
     border: 2px solid var(--border);
-    border-radius: 20px;
-    padding: 20px;
+    border-radius: 22px;
+    padding: 24px;
     text-align: center;
     cursor: pointer;
-    transition: 0.25s;
+    transition: 0.3s;
+
+    color: var(--text);
+    font-weight: 600;
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
-
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
+    align-items: center;
   }
 
   .menu-item:hover {
-    transform: translateY(-6px);
-    background: #fffaf0;
-    box-shadow: 0 12px 28px rgba(255,214,90,0.55);
+    transform: translateY(-7px) scale(1.03);
+    background: #fff6da;
+    box-shadow: 0 12px 26px rgba(255, 195, 0, 0.35);
   }
 
   .menu-icon {
-    font-size: 22px;
-    margin-bottom: 6px;
-    color: var(--gold);
+    font-size: 30px;
+    margin-bottom: 8px;
+    color: var(--sun4);
   }
 
-  .logout-area {
+  .logout-container {
     text-align: center;
-    margin-top: 18px;
+    margin-top: 35px;
   }
 
   .logout-btn {
-    background: var(--green);
+    background: var(--accent);
     color: white;
-    padding: 10px 26px;
-    border-radius: 14px;
-    text-decoration: none;
+    padding: 12px 32px;
+    border-radius: 16px;
     font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
     transition: 0.25s;
-    font-size: 14px;
   }
 
   .logout-btn:hover {
-    background: var(--green-hover);
+    background: var(--accent-hover);
   }
 </style>
 </head>
@@ -622,67 +625,73 @@ DASHBOARD_WEB = """
 <body>
 
 <div class="wrapper">
-  <h2>Selamat datang, {{ user }} 👋</h2>
-  <div class="subtitle">Pilih menu untuk mulai bekerja.</div>
+
+  <div class="header-area">
+      <h2>Selamat datang, {{ user }} 🌻</h2>
+      <div class="subtitle">Pilih menu untuk mulai bekerja</div>
+  </div>
 
   <div class="grid-menu">
 
-    <div class="menu-item" onclick="window.location.href='/neraca-saldo-awal'">
-        <span class="menu-icon">📘</span>Neraca Saldo Awal
+    <div class="menu-item" onclick="location.href='/neraca-saldo-awal'">
+      <span class="menu-icon">📘</span>Neraca Saldo Awal
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/informasi-perusahaan'">
-        <span class="menu-icon">💾</span>Informasi Perusahaan
+    <div class="menu-item" onclick="location.href='/informasi-perusahaan'">
+      <span class="menu-icon">🏢</span>Informasi Perusahaan
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/transaksi'">
-        <span class="menu-icon">💸</span>Input Transaksi
+    <div class="menu-item" onclick="location.href='/transaksi'">
+      <span class="menu-icon">💸</span>Input Transaksi
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/jurnal-umum'">
-        <span class="menu-icon">🧾</span>Jurnal Umum
+    <div class="menu-item" onclick="location.href='/jurnal-umum'">
+      <span class="menu-icon">🧾</span>Jurnal Umum
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/buku-besar'">
-        <span class="menu-icon">📚</span>Buku Besar
+    <div class="menu-item" onclick="location.href='/buku-besar'">
+      <span class="menu-icon">📚</span>Buku Besar
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/neraca-saldo-sebelum-penyesuaian'">
-        <span class="menu-icon">⚖️</span>Neraca Saldo Sebelum Penyesuaian
+    <div class="menu-item" onclick="location.href='/neraca-saldo-sebelum-penyesuaian'">
+      <span class="menu-icon">⚖️</span>Neraca Saldo Sebelum Penyesuaian
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/penyesuaian'">
-        <span class="menu-icon">⚙️</span>Penyesuaian
+    <div class="menu-item" onclick="location.href='/penyesuaian'">
+      <span class="menu-icon">⚙️</span>Penyesuaian
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/neraca-saldo-setelah-penyesuaian'">
-        <span class="menu-icon">🧮</span>Neraca Saldo Setelah Penyesuaian
+    <div class="menu-item" onclick="location.href='/neraca-saldo-setelah-penyesuaian'">
+      <span class="menu-icon">🧮</span>Neraca Saldo Setelah Penyesuaian
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/neraca-lajur'">
-        <span class="menu-icon">🗂️</span>Neraca Lajur
+    <div class="menu-item" onclick="location.href='/neraca-lajur'">
+      <span class="menu-icon">🗂️</span>Neraca Lajur
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/laporan-keuangan'">
-        <span class="menu-icon">💰</span>Laporan Keuangan
+    <div class="menu-item" onclick="location.href='/laporan-keuangan'">
+      <span class="menu-icon">💰</span>Laporan Keuangan
     </div>
 
-    <div class="menu-item" onclick="window.location.href='/jurnal-penutup'">
-        <span class="menu-icon">📄</span>Jurnal Penutup
+    <div class="menu-item" onclick="location.href='/jurnal-penutup'">
+      <span class="menu-icon">📄</span>Jurnal Penutup
     </div>
 
-     <div class="menu-item" onclick="window.location.href='/neraca-saldo-setelah-penutupan'">
-        <span class="menu-icon">📄</span>Neraca Saldo Setelah Penutup
+    <div class="menu-item" onclick="location.href='/neraca-saldo-setelah-penutupan'">
+      <span class="menu-icon">📑</span>Neraca Saldo Setelah Penutup
     </div>
 
-    <div class="logout-area">
-        <a href="/logout" class="logout-btn">Logout</a>
-    </div>
   </div>
+
+  <div class="logout-container">
+    <a href="/logout" class="logout-btn">Logout</a>
+  </div>
+
 </div>
 
 </body>
 </html>
+
 """
 @app.route("/dashboard")
 def dashboard():
