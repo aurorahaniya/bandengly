@@ -2312,7 +2312,7 @@ PENYESUAIAN_WEB = """
         <div id="input-area">
             <div class="row">
                 <input type="text"   name="nama_akun[]" class="mid" placeholder="Nama Akun" required>
-                <input type="text"   name="ref[]" class="small" placeholder="Ref">
+                <input type="text"   name="kode_akun[]" class="small" placeholder="Ref">
                 <input type="number" name="debit[]" class="small" placeholder="Debit">
                 <input type="number" name="kredit[]" class="small" placeholder="Kredit">
             </div>
@@ -2363,7 +2363,7 @@ PENYESUAIAN_WEB = """
                     {{ row.nama_akun }}
                 </td>
 
-                <td class="center">{{ row.ref or "" }}</td>
+                <td class="center">{{ row.kode_akun or "" }}</td>
 
                 <td class="center">
                     {% if row.debit > 0 %}
@@ -2421,17 +2421,10 @@ function addRow() {
 
 @app.route("/penyesuaian", methods=["GET", "POST"])
 def jurnal_penyesuaian():
-
-    def safe_float(val):
-        try:
-            return float(val)
-        except:
-            return 0
-
     if request.method == "POST":
         tanggal = request.form.get("tanggal")
         nama_akun = request.form.getlist("nama_akun[]")
-        kode_akun = request.form.getlist("kode_akun[]")
+        ref = request.form.getlist("ref[]")   # ← User isi ini
         debit = request.form.getlist("debit[]")
         kredit = request.form.getlist("kredit[]")
 
@@ -2439,17 +2432,18 @@ def jurnal_penyesuaian():
             if not nama_akun[i].strip():
                 continue
 
-            d = safe_float(debit[i])
-            k = safe_float(kredit[i])
+            d = float(debit[i]) if debit[i] else 0
+            k = float(kredit[i]) if kredit[i] else 0
 
             supabase.table("jurnal_penyesuaian").insert({
                 "tanggal": tanggal,
                 "nama_akun": nama_akun[i],
-                "kode_akun": kode_akun[i] or None,
+                "kode_akun": ref[i] if i < len(ref) else None,  # ← Ref masuk ke kode_akun
                 "debit": d,
                 "kredit": k,
             }).execute()
 
+    # Load
     data = (
         supabase.table("jurnal_penyesuaian")
         .select("*")
@@ -2458,8 +2452,8 @@ def jurnal_penyesuaian():
         .data
     )
 
-    total_debit = sum(safe_float(x["debit"]) for x in data)
-    total_kredit = sum(safe_float(x["kredit"]) for x in data)
+    total_debit = sum(x["debit"] for x in data)
+    total_kredit = sum(x["kredit"] for x in data)
 
     return render_template_string(
         PENYESUAIAN_WEB,
@@ -2467,7 +2461,6 @@ def jurnal_penyesuaian():
         total_debit=total_debit,
         total_kredit=total_kredit,
     )
-
 
 
 NERACA_SESUDAH_PENYESUAIAN_WEB = """
