@@ -2423,24 +2423,15 @@ function addRow() {
 def jurnal_penyesuaian():
 
     def safe_float(val):
-        if val is None:
-            return 0
-        if isinstance(val, (int, float)):
+        try:
             return float(val)
-        if isinstance(val, str):
-            val = val.strip()
-            if val == "":
-                return 0
-            try:
-                return float(val)
-            except:
-                return 0
-        return 0
+        except:
+            return 0
 
     if request.method == "POST":
         tanggal = request.form.get("tanggal")
         nama_akun = request.form.getlist("nama_akun[]")
-        ref = request.form.getlist("ref[]")
+        kode_akun = request.form.getlist("kode_akun[]")
         debit = request.form.getlist("debit[]")
         kredit = request.form.getlist("kredit[]")
 
@@ -2454,7 +2445,7 @@ def jurnal_penyesuaian():
             supabase.table("jurnal_penyesuaian").insert({
                 "tanggal": tanggal,
                 "nama_akun": nama_akun[i],
-                "ref": ref[i] or None,
+                "kode_akun": kode_akun[i] or None,
                 "debit": d,
                 "kredit": k,
             }).execute()
@@ -2467,8 +2458,8 @@ def jurnal_penyesuaian():
         .data
     )
 
-    total_debit = sum(safe_float(x.get("debit")) for x in data)
-    total_kredit = sum(safe_float(x.get("kredit")) for x in data)
+    total_debit = sum(safe_float(x["debit"]) for x in data)
+    total_kredit = sum(safe_float(x["kredit"]) for x in data)
 
     return render_template_string(
         PENYESUAIAN_WEB,
@@ -2476,6 +2467,7 @@ def jurnal_penyesuaian():
         total_debit=total_debit,
         total_kredit=total_kredit,
     )
+
 
 
 NERACA_SESUDAH_PENYESUAIAN_WEB = """
