@@ -2406,7 +2406,7 @@ function addRow() {
 
     div.innerHTML = `
         <input type="text"   name="nama_akun[]" class="mid" placeholder="Nama Akun" required>
-        <input type="text"   name="ref[]" class="small" placeholder="Ref">
+        <input type="text"   name="kode_akun[]" class="small" placeholder="Ref">
         <input type="number" name="debit[]" class="small" placeholder="Debit">
         <input type="number" name="kredit[]" class="small" placeholder="Kredit">
     `;
@@ -2424,7 +2424,7 @@ def jurnal_penyesuaian():
     if request.method == "POST":
         tanggal = request.form.get("tanggal")
         nama_akun = request.form.getlist("nama_akun[]")
-        ref = request.form.getlist("ref[]")   # ← User isi ini
+        kode_akun = request.form.getlist("kode_akun[]")
         debit = request.form.getlist("debit[]")
         kredit = request.form.getlist("kredit[]")
 
@@ -2438,12 +2438,12 @@ def jurnal_penyesuaian():
             supabase.table("jurnal_penyesuaian").insert({
                 "tanggal": tanggal,
                 "nama_akun": nama_akun[i],
-                "kode_akun": ref[i] if i < len(ref) else None,  # ← Ref masuk ke kode_akun
+                "kode_akun": kode_akun[i] if i < len(kode_akun) else None,
                 "debit": d,
                 "kredit": k,
             }).execute()
 
-    # Load
+    # Load data
     data = (
         supabase.table("jurnal_penyesuaian")
         .select("*")
@@ -2461,6 +2461,7 @@ def jurnal_penyesuaian():
         total_debit=total_debit,
         total_kredit=total_kredit,
     )
+
 
 
 NERACA_SESUDAH_PENYESUAIAN_WEB = """
