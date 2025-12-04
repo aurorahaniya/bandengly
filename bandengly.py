@@ -465,12 +465,6 @@ def register():
 
     return render_template_string(REGISTRASI_WEB)
 
-
-
-
-
-
-
 @app.route("/auth/callback")
 def auth_callback():
     from flask import request
@@ -479,19 +473,9 @@ def auth_callback():
 
     if not token:
         return "Token tidak ditemukan di URL verifikasi."
-
-    # Simpan session login
     session["access_token"] = token
 
     return redirect("/dashboard")
-
-
-
-
-
-
-
-
 
 DASHBOARD_WEB = """
 <!DOCTYPE html>
@@ -505,17 +489,16 @@ DASHBOARD_WEB = """
 
 <style>
   :root {
-    /* SUNFLOWER COLORS */
-    --sun1: #FFF9E8;   /* light sunflower cream */
-    --sun2: #FFE9A8;   /* soft yellow */
-    --sun3: #FFD45A;   /* sunflower highlight */
-    --sun4: #FFC300;   /* core sunflower */
+    --sun1: #FFF9E8;   
+    --sun2: #FFE9A8;   
+    --sun3: #FFD45A;   
+    --sun4: #FFC300;   
 
     --card: rgba(255, 251, 238, 0.7);
     --border: rgba(255, 195, 0, 0.45);
-    --text: #5A3E2B;   /* sunflower seed brown */
+    --text: #5A3E2B;   
 
-    --accent: #8BBE4D;  /* leaf green */
+    --accent: #8BBE4D;  
     --accent-hover: #7CAF42;
   }
 
@@ -621,13 +604,11 @@ DASHBOARD_WEB = """
   }
 </style>
 </head>
-
 <body>
-
 <div class="wrapper">
 
   <div class="header-area">
-      <h2>Selamat datang, {{ user }} 🌻</h2>
+      <h2>Selamat datang, {{ user }}🐡</h2>
       <div class="subtitle">Pilih menu untuk mulai bekerja</div>
   </div>
 
@@ -688,11 +669,10 @@ DASHBOARD_WEB = """
   </div>
 
 </div>
-
 </body>
 </html>
-
 """
+
 @app.route("/dashboard")
 def dashboard():
     if "user_email" not in session:
@@ -1240,14 +1220,14 @@ def informasi():
     for a in aset_raw:
         a["harga"] = rp(a["harga"])
         a["nilai_sisa"] = f"{a['nilai_sisa']:,.0f}".replace(",", ".") 
-        a["umur"] = int(a["umur"])   # TANPA RP
+        a["umur"] = int(a["umur"])   
         aset.append(a)
 
     ikan = []
     for i in ikan_raw:
         i["qty"] = int(i["qty"])
-        i["harga"] = rp(i["harga_perkg"])     # Harga kolom kiri
-        i["jual"] = rp(i["harga_jual"])       # Harga Jual kolom kanan
+        i["harga"] = rp(i["harga_perkg"])     
+        i["jual"] = rp(i["harga_jual"])       
         i["total"] = rp(i["total"])
         ikan.append(i)
 
@@ -1258,9 +1238,6 @@ def informasi():
         aset=aset,
         ikan=ikan,
     )
-
-
-
 
 
 TRANSAKSI_WEB = """
